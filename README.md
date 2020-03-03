@@ -3,8 +3,8 @@ Using multiple machine learning algorithms to generate the best predicitive regr
 
 The training data is provided in the file listed as solubility_train.fp, this has the chemical structure in SMILES format, followed by the Solubility in log(S) values, and then the binary features representation in traditional MACCS fingerprints.
 
-For more information on each format see below:
-SMILES format: http://opensmiles.org/opensmiles.html
+For more information on each format see below: <br/>
+SMILES format: http://opensmiles.org/opensmiles.html <br/>
 MACCS format: http://www.dalkescientific.com/writings/NBN/fingerprints.html
 
 The testing data is provided in the file listed as solubility_predict.fp which only has the chemical structure and the MACCS fingerprints. The goal is to evaluate which model has the best predictive capability to the true solubility values.
