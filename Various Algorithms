@@ -1,0 +1,89 @@
+#!/usr/bin/python3/
+import sys
+import sklearn
+from sklearn import linear_model
+from sklearn.metrics import *
+from sklearn.model_selection import KFold
+from sklearn import model_selection
+from sklearn import svm
+from sklearn import model_selection
+from sklearn import neighbors
+from sklearn import tree
+import numpy as np
+import scipy.cluster.vq as vq #vq: vector quantization
+import matplotlib.pylab as plt
+import pandas as pd
+from sklearn.svm import SVR 
+
+#Extracting data from the files and organizing it for modeling
+h = list(range(169))
+h1 = list(range(168))
+
+data =  pd.read_csv(sys.argv[1], sep=' ', names = h)
+data2 = pd.read_csv(sys.argv[2], sep=' ', names = h1)
+
+x = np.array(data)
+xx = np.array(data2)
+
+names =[]
+for i in list(range(len(x))):
+    names.append(x[i][0])
+
+names2 = []
+for i in list(range(len(xx))):
+    names2.append(xx[i][0])
+    
+y1 = []
+for i in list(range(len(x))):
+    y1.append(x[i][1])
+    
+x1 = []
+for i in list(range(len(x))):
+    x1.append(x[i][2:])
+    
+x2 = []
+for i in list(range(len(xx))):
+    x2.append(xx[i][1:])
+
+names_array = np.array(names)
+names2_array = np.array(names2)
+x_array = np.array(x1, dtype = float)
+y_array = np.array(y1, dtype = float)
+x2_array = np.array(x2, dtype = float)
+
+
+#model 1 Linear Regression
+model = linear_model.LinearRegression() # create the model
+model.fit(x_array,y_array) # fit the model to the data
+p = model.predict(x2_array) # make predictions with the model
+
+#model 2 Lasso Metho
+
+model = linear_model.Lasso(alpha=0.002003812485254072)
+model.fit(x_array,y_array)
+p2 = model.predict(x2_array)
+
+#model 3 Lasso method with test splits mean squared error 1.128
+kf = KFold(n_splits=8)
+for train,test in kf.split(x_array):
+    model = linear_model.Lasso(alpha=0.002003812485254072, max_iter=10000)
+    model.fit(x_array[train],y_array[train])
+    p4 = model.predict(x2_array)
+
+#model 4 ElasticNet with test splits mean squared 1.128
+
+kf = KFold(n_splits=8)
+for train,test in kf.split(x_array): # these are arrays of indices
+    model = linear_model.ElasticNetCV()
+    model.fit(x_array[train],y_array[train])
+    p5 = model.predict(x2_array)    
+
+#model 5 Support Vector Machine with log boundary mean squared error .781
+
+from sklearn.svm import SVR 
+model = svm.SVR(kernel = 'rbf', C=50, gamma = .05, epsilon = .01)
+model.fit(x_array,y_array)
+p6 = model.predict(x2_array)
+    
+for i in list(range(len(names2))):
+    print(names2[i], p6[i])
